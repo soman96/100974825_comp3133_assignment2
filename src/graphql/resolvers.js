@@ -7,6 +7,14 @@ const cloudinary = require("../config/cloudinary");
 const { signToken } = require("../utils/auth");
 const { assert, validateSignup, validateEmployeeInput } = require("../utils/validation");
 
+// Helper to see if user is authenticated in context otherwise throw error
+function requireAuth(context) {
+  // context.user is set in server.js file
+  if (!context || !context.user) {
+    throw new Error("Unauthorized. Please login.");
+  }
+}
+
 module.exports = {
   Query: {
     // Login with username or email
@@ -21,7 +29,7 @@ module.exports = {
       // Use same message for security
       assert(user, "Invalid credentials");
 
-      // Compare pwd 
+      // Compare pwd
       const ok = await bcrypt.compare(password, user.password);
       assert(ok, "Invalid credentials");
 
@@ -32,19 +40,22 @@ module.exports = {
     },
 
     // Get all emps sorted by creation date desc
-    async getAllEmployees() {
+    async getAllEmployees(_, __, context) {
+      requireAuth(context);
       return Employee.find().sort({ created_at: -1 });
     },
 
     // Get emp by id
-    async getEmployeeById(_, { eid }) {
+    async getEmployeeById(_, { eid }, context) {
+      requireAuth(context);
       const employee = await Employee.findById(eid);
       assert(employee, "Employee not found");
       return employee;
     },
 
     // Search emps by designation or department
-    async searchEmployees(_, { designation, department }) {
+    async searchEmployees(_, { designation, department }, context) {
+      requireAuth(context);
       const filter = {};
       if (designation) filter.designation = designation;
       if (department) filter.department = department;
@@ -75,7 +86,8 @@ module.exports = {
     },
 
     // Add new employee
-    async addEmployee(_, { input }) {
+    async addEmployee(_, { input }, context) {
+      requireAuth(context);
       validateEmployeeInput(input);
 
       const emailTaken = await Employee.findOne({ email: input.email });
@@ -85,7 +97,6 @@ module.exports = {
 
       // Upload photo if provided
       if (input.employee_photo) {
-
         const uploaded = await cloudinary.uploader.upload(input.employee_photo, {
           folder: "comp3133_emps",
         });
@@ -103,7 +114,8 @@ module.exports = {
     },
 
     // Update employee by id
-    async updateEmployee(_, { eid, input }) {
+    async updateEmployee(_, { eid, input }, context) {
+      requireAuth(context);
       const existing = await Employee.findById(eid);
       assert(existing, "Employee not found");
 
@@ -140,7 +152,8 @@ module.exports = {
     },
 
     // Delete employee by id
-    async deleteEmployee(_, { eid }) {
+    async deleteEmployee(_, { eid }, context) {
+      requireAuth(context);
       const deleted = await Employee.findByIdAndDelete(eid);
       assert(deleted, "Employee not found");
 
