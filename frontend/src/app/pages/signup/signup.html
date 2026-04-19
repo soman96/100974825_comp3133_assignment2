@@ -1,0 +1,70 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <h1 class="auth-title text-center">Create an account</h1>
+    <p class="auth-subtitle text-center">Employee Management System</p>
+
+    <div class="alert alert-danger py-2 px-3 mb-3" *ngIf="error">
+      <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+    </div>
+    <div class="alert alert-success py-2 px-3 mb-3" *ngIf="success">
+      <i class="bi bi-check-circle me-2"></i>{{ success }}
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="username"
+          placeholder="Choose a username"
+          [class.is-invalid]="f['username'].touched && f['username'].invalid"
+        />
+        <div class="invalid-feedback" *ngIf="f['username'].errors?.['required']">Required.</div>
+        <div class="invalid-feedback" *ngIf="f['username'].errors?.['minlength']">At least 3 characters.</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="you@example.com"
+          [class.is-invalid]="f['email'].touched && f['email'].invalid"
+        />
+        <div class="invalid-feedback" *ngIf="f['email'].errors?.['required']">Required.</div>
+        <div class="invalid-feedback" *ngIf="f['email'].errors?.['email']">Enter a valid email.</div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="Create a password"
+          [class.is-invalid]="f['password'].touched && f['password'].invalid"
+        />
+        <div class="invalid-feedback" *ngIf="f['password'].errors?.['required']">Required.</div>
+        <div class="invalid-feedback" *ngIf="f['password'].errors?.['minlength']">At least 6 characters.</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-2" [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ loading ? 'Creating account...' : 'Register' }}
+      </button>
+
+    </form>
+
+    <p class="text-center mt-3 mb-0" style="color:var(--text-muted);font-size:0.88rem">
+      Already have an account?
+      <a routerLink="/login" style="color:var(--accent);text-decoration:none;font-weight:600">
+        Log In
+      </a>
+    </p>
+
+  </div>
+</div>

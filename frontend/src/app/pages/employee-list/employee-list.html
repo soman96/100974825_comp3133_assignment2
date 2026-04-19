@@ -1,0 +1,213 @@
+<div class="page-container">
+
+  <!-- Page header -->
+  <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+      <h2 style="font-weight:800;margin:0;color:var(--text-primary)">
+        <i class="bi bi-people me-2" style="color:var(--accent)"></i>Employees
+      </h2>
+      <p style="color:var(--text-muted);margin:4px 0 0;font-size:0.85rem">
+        {{ employees.length }} member{{ employees.length !== 1 ? 's' : '' }}
+      </p>
+    </div>
+    <a routerLink="/employees/add" class="btn btn-primary">
+      <i class="bi bi-person-plus me-1"></i>Add Employee
+    </a>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger py-2" *ngIf="error">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+  </div>
+
+  <!-- Search bar -->
+  <div class="card mb-4">
+    <div class="card-body py-3">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label">Department</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="IT"
+            [(ngModel)]="searchDept"
+            (keyup.enter)="onSearch()"
+          />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Designation</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Developer"
+            [(ngModel)]="searchDesig"
+            (keyup.enter)="onSearch()"
+          />
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button class="btn btn-primary flex-grow-1" (click)="onSearch()">
+            <i class="bi bi-search me-1"></i>Search
+          </button>
+          <button class="btn btn-secondary" (click)="clearSearch()" title="Clear">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading spinner -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border mb-3" style="width:2.5rem;height:2.5rem"></div>
+    <p style="color:var(--text-muted)">Loading Employees</p>
+  </div>
+
+  <!-- Empty state -->
+  <div class="text-center py-5" *ngIf="!loading && employees.length === 0">
+    <i class="bi bi-person-x-fill" style="font-size:3rem;color:var(--text-muted)"></i>
+    <p class="mt-2" style="color:var(--text-muted)">No employees found.</p>
+    <a routerLink="/employees/add" class="btn btn-primary btn-sm mt-1">
+      <i class="bi bi-person-plus me-1"></i>Add an Employee
+    </a>
+  </div>
+
+  <!-- Table -->
+  <div class="card" *ngIf="!loading && employees.length > 0">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Salary</th>
+            <th>Joined</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of employees">
+
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <img [src]="avatarUrl(emp)" [alt]="emp.first_name" class="avatar-sm" />
+                <span style="font-weight:600">{{ emp.first_name }} {{ emp.last_name }}</span>
+              </div>
+            </td>
+
+            <td style="color:var(--text-secondary);font-size:0.88rem">{{ emp.email }}</td>
+
+            <td><span class="badge-dept">{{ emp.department }}</span></td>
+
+            <td style="color:var(--text-secondary);font-size:0.88rem">{{ emp.designation }}</td>
+
+            <td style="color:var(--success);font-weight:600">
+              ${{ emp.salary | number:'1.0-0' }}
+            </td>
+
+            <td style="color:var(--text-muted);font-size:0.82rem">
+              {{ formatDate(emp.date_of_joining) }}
+            </td>
+
+            <td class="text-end">
+              <div class="d-flex justify-content-end gap-1">
+                <button class="btn btn-sm btn-secondary"
+                        (click)="viewEmployee(emp)"
+                        title="View details">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-primary"
+                        (click)="editEmployee(emp._id)"
+                        title="Edit">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-danger"
+                        (click)="deleteEmployee(emp._id, emp.first_name + ' ' + emp.last_name)"
+                        title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── Employee Detail Modal ─────────────────────────────────────────────── -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" style="font-weight:700">Employee Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" *ngIf="selectedEmployee">
+
+        <div class="text-center mb-4">
+          <img [src]="avatarUrl(selectedEmployee)" class="avatar-lg" alt="Employee photo" />
+          <h4 class="mt-3 mb-1" style="font-weight:800">
+            {{ selectedEmployee.first_name }} {{ selectedEmployee.last_name }}
+          </h4>
+          <p style="color:var(--accent);font-weight:600;margin:0">
+            {{ selectedEmployee.designation }}
+          </p>
+        </div>
+
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="detail-field">
+              <div class="detail-label">Email</div>
+              <div class="detail-value" style="font-size:0.8rem;word-break:break-all">
+                {{ selectedEmployee.email }}
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="detail-field">
+              <div class="detail-label">Department</div>
+              <div class="detail-value">{{ selectedEmployee.department }}</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="detail-field">
+              <div class="detail-label">Gender</div>
+              <div class="detail-value">{{ selectedEmployee.gender }}</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="detail-field">
+              <div class="detail-label">Salary</div>
+              <div class="detail-value" style="color:var(--success)">
+                ${{ selectedEmployee.salary | number:'1.0-0' }}
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="detail-field">
+              <div class="detail-label">Date of Joining</div>
+              <div class="detail-value">{{ formatDate(selectedEmployee.date_of_joining) }}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-primary"
+                data-bs-dismiss="modal"
+                (click)="editEmployee(selectedEmployee._id)">
+          <i class="bi bi-pencil me-1"></i>Edit
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

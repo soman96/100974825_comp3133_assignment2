@@ -1,0 +1,275 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg-primary:   #1e1f22; 
+  --bg-secondary: #2b2d31; 
+  --bg-tertiary:  #313338; 
+  --bg-hover:     #35373c;
+
+  --accent:       #5865f2; 
+  --accent-hover: #4752c4;
+  --danger:       #ed4245; 
+  --success:      #3ba55d;
+
+  --text-primary:   #dbdee1;
+  --text-secondary: #b5bac1;
+  --text-muted:     #80848e;
+
+  --border:   #3f4147;
+  --input-bg: #1e1f22;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.btn-primary {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  font-weight: 600;
+  &:hover:not(:disabled) {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+  }
+  &:disabled { opacity: 0.6; }
+}
+
+.btn-danger {
+  background-color: var(--danger) !important;
+  border-color: var(--danger) !important;
+  color: #fff !important;
+}
+
+.btn-secondary {
+  background-color: var(--bg-hover) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+  &:hover { background-color: var(--border) !important; }
+}
+
+.card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+.card-header {
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  color: var(--text-primary);
+  padding: 0.85rem 1.25rem;
+}
+
+.card-body { padding: 1.5rem; }
+
+.form-control, .form-select {
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 4px;
+  padding: 0.55rem 0.75rem;
+
+  &::placeholder { color: var(--text-muted); }
+
+  &:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.25) !important;
+    outline: none;
+  }
+
+  option {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+}
+
+.form-label {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.invalid-feedback { color: #f38ba8; font-size: 0.8rem; }
+
+// ─── Table ───────────────────────────────────────────────────────────────────
+.table {
+  color: var(--text-primary) !important;
+  margin-bottom: 0;
+
+  thead th {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-muted) !important;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 2px solid var(--border) !important;
+    padding: 0.85rem 1rem;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border) !important;
+    transition: background-color 0.1s;
+    &:hover { background-color: var(--bg-hover) !important; }
+  }
+
+  td {
+    vertical-align: middle;
+    border-color: var(--border) !important;
+    padding: 0.75rem 1rem;
+  }
+}
+
+.navbar-discord {
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-link-discord {
+  color: var(--text-secondary) !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  transition: background-color 0.15s, color 0.15s;
+
+  &:hover, &.active {
+    background-color: var(--bg-hover);
+    color: var(--text-primary) !important;
+  }
+}
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 2rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  margin: 1rem;
+}
+
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-bottom: 1.5rem;
+}
+
+.alert-danger {
+  background-color: rgba(237, 66, 69, 0.12);
+  border: 1px solid var(--danger);
+  color: #f38ba8;
+  border-radius: 4px;
+}
+
+.alert-success {
+  background-color: rgba(59, 165, 93, 0.12);
+  border: 1px solid var(--success);
+  color: #a6e3a1;
+  border-radius: 4px;
+}
+
+.avatar-sm {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.avatar-lg {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+}
+
+.badge-dept {
+  background-color: rgba(88, 101, 242, 0.18);
+  color: #949cf7;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.modal-content {
+  background-color: var(--bg-tertiary) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary);
+}
+
+.modal-header { border-bottom-color: var(--border) !important; }
+.modal-footer { border-top-color: var(--border) !important; }
+
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.spinner-border { color: var(--accent); }
+
+.detail-field {
+  background: var(--bg-primary);
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+
+  .detail-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+
+  .detail-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}

@@ -9,31 +9,36 @@ const { assert, validateSignup, validateEmployeeInput } = require("../utils/vali
 
 // Helper to see if user is authenticated in context otherwise throw error
 function requireAuth(context) {
-  // context.user is set in server.js file
   if (!context || !context.user) {
     throw new Error("Unauthorized. Please login.");
   }
 }
 
 module.exports = {
+
+  // Convert date_of_joining to ISO string for frontend
+  Employee: {
+    date_of_joining: (parent) => {
+      return parent.date_of_joining
+        ? new Date(parent.date_of_joining).toISOString()
+        : null;
+    },
+  },
+
   Query: {
     // Login with username or email
     async login(_, { input }) {
       const { username_or_email, password } = input;
 
-      // Find user by username or email
       const user = await User.findOne({
         $or: [{ username: username_or_email }, { email: username_or_email }],
       });
 
-      // Use same message for security
       assert(user, "Invalid credentials");
 
-      // Compare pwd
       const ok = await bcrypt.compare(password, user.password);
       assert(ok, "Invalid credentials");
 
-      // Create JWT token for client
       const token = signToken(user);
 
       return { message: "Login successful", token, user };
@@ -75,7 +80,6 @@ module.exports = {
       const exists = await User.findOne({ $or: [{ username }, { email }] });
       assert(!exists, "User with that username/email already exists");
 
-      // Hash password
       const hashed = await bcrypt.hash(password, 10);
 
       const user = await User.create({ username, email, password: hashed });
@@ -100,14 +104,13 @@ module.exports = {
         const uploaded = await cloudinary.uploader.upload(input.employee_photo, {
           folder: "comp3133_emps",
         });
-
         photoUrl = uploaded.secure_url;
       }
 
       const employee = await Employee.create({
         ...input,
         employee_photo: photoUrl,
-        date_of_joining: new Date(input.date_of_joining), // convert string to date
+        date_of_joining: new Date(input.date_of_joining),
       });
 
       return { message: "Employee created successfully", employee };
@@ -119,7 +122,7 @@ module.exports = {
       const existing = await Employee.findById(eid);
       assert(existing, "Employee not found");
 
-      // If updating email then validate and ensure its unique
+      // If updating email validate and ensure its unique
       if (input.email) {
         assert(validator.isEmail(input.email), "valid email is required");
 
@@ -133,7 +136,7 @@ module.exports = {
         assert(typeof input.salary === "number" && input.salary >= 1000, "salary must be >= 1000");
       }
 
-      // If photo upload to Cloudiney
+      // Upload new photo to Cloudinary if provided
       if (input.employee_photo) {
         const uploaded = await cloudinary.uploader.upload(input.employee_photo, {
           folder: "comp3133_emps",
@@ -141,12 +144,13 @@ module.exports = {
         input.employee_photo = uploaded.secure_url;
       }
 
-      // Convert date string to date
+      // Convert date string to Date object
       if (input.date_of_joining) {
         input.date_of_joining = new Date(input.date_of_joining);
       }
 
-      const updated = await Employee.findByIdAndUpdate(eid, input, { new: true });
+      // returnDocument replaces deprecated { new: true }
+      const updated = await Employee.findByIdAndUpdate(eid, input, { returnDocument: 'after' });
 
       return { message: "Employee updated successfully", employee: updated };
     },

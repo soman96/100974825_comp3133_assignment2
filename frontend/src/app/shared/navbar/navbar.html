@@ -1,0 +1,37 @@
+<nav class="navbar-discord" *ngIf="authService.isLoggedIn()">
+
+  <a routerLink="/employees" class="text-decoration-none d-flex align-items-center gap-2">
+    <div style="width:32px;height:32px;background:var(--accent);border-radius:50%;
+                display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <i class="bi bi-people-fill" style="color:#fff;font-size:0.85rem"></i>
+    </div>
+    <span style="font-weight:800;font-size:1rem;color:var(--text-primary)">Employee Manager</span>
+  </a>
+
+  <div class="d-flex align-items-center gap-1">
+
+    <a routerLink="/employees"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="nav-link-discord">
+      <i class="bi bi-list-ul me-1"></i>Employees
+    </a>
+
+    <a routerLink="/employees/add"
+       routerLinkActive="active"
+       class="nav-link-discord">
+      <i class="bi bi-person-plus me-1"></i>Add
+    </a>
+
+    <span style="color:var(--text-muted);font-size:0.82rem;padding:0 0.75rem;
+                 border-left:1px solid var(--border);margin-left:0.25rem">
+      <i class="bi bi-person-circle me-1"></i>{{ authService.getUsername() }}
+    </span>
+
+    <button class="btn btn-sm btn-danger" (click)="authService.logout()">
+      <i class="bi bi-box-arrow-right me-1"></i>Logout
+    </button>
+
+  </div>
+
+</nav>

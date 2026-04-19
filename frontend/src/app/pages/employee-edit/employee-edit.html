@@ -1,0 +1,118 @@
+<div class="page-container" style="max-width:720px">
+
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <a routerLink="/employees" class="btn btn-secondary btn-sm">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+      <h2 style="font-weight:800;margin:0">Edit Employee</h2>
+      <p style="color:var(--text-muted);font-size:0.85rem;margin:0">Update the details below</p>
+    </div>
+  </div>
+
+  <!-- Loading and error states -->
+  <div class="text-center py-5" *ngIf="loadingData">
+    <div class="spinner-border mb-3" style="width:2.5rem;height:2.5rem"></div>
+    <p style="color:var(--text-muted)">Loading employee data...</p>
+  </div>
+
+  <div class="alert alert-danger py-2" *ngIf="error">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+  </div>
+
+  <div class="card" *ngIf="!loadingData">
+    <div class="card-body">
+      <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+        <!-- Photo -->
+        <div class="text-center mb-4">
+          <img
+            [src]="photoPreview || 'https://ui-avatars.com/api/?background=5865f2&color=fff&size=88'"
+            class="avatar-lg mb-2"
+            alt="Employee photo"
+          />
+          <div>
+            <label class="btn btn-secondary btn-sm">
+              <i class="bi bi-camera me-1"></i>Change Photo
+              <input type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
+            </label>
+          </div>
+        </div>
+
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" formControlName="first_name"
+                   [class.is-invalid]="f['first_name'].touched && f['first_name'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" formControlName="last_name"
+                   [class.is-invalid]="f['last_name'].touched && f['last_name'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" formControlName="email"
+                   [class.is-invalid]="f['email'].touched && f['email'].invalid" />
+            <div class="invalid-feedback" *ngIf="f['email'].errors?.['required']">Required.</div>
+            <div class="invalid-feedback" *ngIf="f['email'].errors?.['email']">Valid email required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Gender</label>
+            <select class="form-select" formControlName="gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Designation</label>
+            <input type="text" class="form-control" formControlName="designation"
+                   [class.is-invalid]="f['designation'].touched && f['designation'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Department</label>
+            <input type="text" class="form-control" formControlName="department"
+                   [class.is-invalid]="f['department'].touched && f['department'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Salary ($)</label>
+            <input type="number" class="form-control" formControlName="salary"
+                   [class.is-invalid]="f['salary'].touched && f['salary'].invalid" />
+            <div class="invalid-feedback" *ngIf="f['salary'].errors?.['required']">Required.</div>
+            <div class="invalid-feedback" *ngIf="f['salary'].errors?.['min']">Minimum $1,000.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Date of Joining</label>
+            <input type="date" class="form-control" formControlName="date_of_joining"
+                   [class.is-invalid]="f['date_of_joining'].touched && f['date_of_joining'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary px-4" [disabled]="saving">
+            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+            {{ saving ? 'Saving...' : 'Update Employee' }}
+          </button>
+          <a routerLink="/employees" class="btn btn-secondary">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,63 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <h1 class="auth-title text-center">Welcome back!</h1>
+    <p class="auth-subtitle text-center">Employee Management System</p>
+
+    <!-- Backend error -->
+    <div class="alert alert-danger py-2 px-3 mb-3" *ngIf="error">
+      <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <div class="mb-3">
+        <label class="form-label">Username or Email</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="username_or_email"
+          placeholder="Enter your username or email"
+          [class.is-invalid]="f['username_or_email'].touched && f['username_or_email'].invalid"
+        />
+        <div class="invalid-feedback" *ngIf="f['username_or_email'].errors?.['required']">
+          This field is required.
+        </div>
+        <div class="invalid-feedback" *ngIf="f['username_or_email'].errors?.['minlength']">
+          At least 3 characters required.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="Enter your password"
+          [class.is-invalid]="f['password'].touched && f['password'].invalid"
+        />
+        <div class="invalid-feedback" *ngIf="f['password'].errors?.['required']">
+          Password is required.
+        </div>
+        <div class="invalid-feedback" *ngIf="f['password'].errors?.['minlength']">
+          At least 6 characters required.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-2" [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ loading ? 'Signing in...' : 'Log In' }}
+      </button>
+
+    </form>
+
+    <p class="text-center mt-3 mb-0" style="color:var(--text-muted);font-size:0.88rem">
+      Don't have an account?
+      <a routerLink="/signup" style="color:var(--accent);text-decoration:none;font-weight:600">
+        Register
+      </a>
+    </p>
+
+  </div>
+</div>

@@ -1,0 +1,121 @@
+<div class="page-container" style="max-width:720px">
+
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <a routerLink="/employees" class="btn btn-secondary btn-sm">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+      <h2 style="font-weight:800;margin:0">Add Employee</h2>
+      <p style="color:var(--text-muted);font-size:0.85rem;margin:0">Fill in the details below</p>
+    </div>
+  </div>
+
+  <div class="alert alert-danger py-2" *ngIf="error">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+        <!-- Photo upload -->
+        <div class="text-center mb-4">
+          <img
+            [src]="photoPreview || 'https://ui-avatars.com/api/?name=New+Employee&background=5865f2&color=fff&size=88'"
+            class="avatar-lg mb-2"
+            alt="Preview"
+          />
+          <div>
+            <label class="btn btn-secondary btn-sm">
+              <i class="bi bi-camera me-1"></i>
+              {{ photoPreview ? 'Change Photo' : 'Upload Photo' }}
+              <input type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
+            </label>
+          </div>
+        </div>
+
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label">First Name <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" formControlName="first_name"
+                   placeholder="John"
+                   [class.is-invalid]="f['first_name'].touched && f['first_name'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Last Name <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" formControlName="last_name"
+                   placeholder="Doe"
+                   [class.is-invalid]="f['last_name'].touched && f['last_name'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Email <span style="color:var(--danger)">*</span></label>
+            <input type="email" class="form-control" formControlName="email"
+                   placeholder="john@example.com"
+                   [class.is-invalid]="f['email'].touched && f['email'].invalid" />
+            <div class="invalid-feedback" *ngIf="f['email'].errors?.['required']">Required.</div>
+            <div class="invalid-feedback" *ngIf="f['email'].errors?.['email']">Valid email required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Gender <span style="color:var(--danger)">*</span></label>
+            <!-- Values match your mongoose enum exactly: Male, Female, Other -->
+            <select class="form-select" formControlName="gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Designation <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" formControlName="designation"
+                   placeholder="Developer"
+                   [class.is-invalid]="f['designation'].touched && f['designation'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Department <span style="color:var(--danger)">*</span></label>
+            <input type="text" class="form-control" formControlName="department"
+                   placeholder="Engineering"
+                   [class.is-invalid]="f['department'].touched && f['department'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Salary ($) <span style="color:var(--danger)">*</span></label>
+            <!-- Minimum 1000 matches your backend: salary must be >= 1000 -->
+            <input type="number" class="form-control" formControlName="salary"
+                   placeholder="Minimum 1000"
+                   [class.is-invalid]="f['salary'].touched && f['salary'].invalid" />
+            <div class="invalid-feedback" *ngIf="f['salary'].errors?.['required']">Required.</div>
+            <div class="invalid-feedback" *ngIf="f['salary'].errors?.['min']">Minimum salary is $1,000.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Date of Joining <span style="color:var(--danger)">*</span></label>
+            <input type="date" class="form-control" formControlName="date_of_joining"
+                   [class.is-invalid]="f['date_of_joining'].touched && f['date_of_joining'].invalid" />
+            <div class="invalid-feedback">Required.</div>
+          </div>
+
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary px-4" [disabled]="loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ loading ? 'Saving...' : 'Add Employee' }}
+          </button>
+          <a routerLink="/employees" class="btn btn-secondary">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
