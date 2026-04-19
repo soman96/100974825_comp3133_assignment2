@@ -9,6 +9,9 @@ const typeDefs = require("./src/graphql/typeDefs"); // GraphQL schema definition
 const resolvers = require("./src/graphql/resolvers"); // GraphQL resolver functions
 const { getUserFromReq } = require("./src/utils/auth");
 
+// Cache the app so DB only connects once across warm Vercel function calls
+let cachedApp = null;
+
 async function startServer() {
   const app = express();
 
@@ -46,10 +49,23 @@ async function startServer() {
   // Mount the GraphQL endpoint — cors: false prevents Apollo overriding our CORS above
   server.applyMiddleware({ app, path: "/graphql", cors: false });
 
-  const PORT = process.env.PORT || 4000;
-  app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}${server.graphqlPath}`);
-  });
+  return app;
 }
 
-startServer();
+// Vercel: export a handler function — this is what Vercel calls on each request
+module.exports = async (req, res) => {
+  if (!cachedApp) {
+    cachedApp = await startServer(); // Only runs once on cold start
+  }
+  cachedApp(req, res);
+};
+
+// Local dev: start the server normally with app.listen()
+if (process.env.NODE_ENV !== "production") {
+  startServer().then((app) => {
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}/graphql`);
+    });
+  });
+}
