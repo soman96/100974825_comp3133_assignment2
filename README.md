@@ -26,8 +26,8 @@ Make sure you have the following installed:
 
 - [Node.js](https://nodejs.org/) v18 or higher
 - [Angular CLI](https://angular.io/cli) v17 or higher
-- A [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account and cluster
-- A [Cloudinary](https://cloudinary.com/) account
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account and cluster
+- [Cloudinary](https://cloudinary.com/) account
 
 ---
 
